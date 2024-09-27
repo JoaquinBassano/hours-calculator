@@ -2,7 +2,8 @@ import moment from 'moment'
 
 import { config } from '../../config/index.js'
 
-import { sumHours } from '../helpers/sum-hours.js'
+import { sumHours, calculateRegularAndExtraHours } from './hours-operations.js'
+import { getCategoryKeyByName } from './get-category-key.js'
 
 const { type_days: TYPE_DAYS, employee_categories: EMPLOYEE_CATEGORIES } =
   config
@@ -43,6 +44,11 @@ export const calculateWorkHoursAndEarnings = (assistances, employees) => {
 
   // Procesamiento de las horas de cada empleado
   Object.values(assistancesXEmail).forEach((employee) => {
+    const hsThreshold =
+      EMPLOYEE_CATEGORIES[
+        getCategoryKeyByName(EMPLOYEE_CATEGORIES, employee.category)
+      ].rest
+
     employee.assistances.forEach((assistance) => {
       const { type_day: typeDay, hours_worked: hoursWorked } = assistance
 
@@ -55,10 +61,16 @@ export const calculateWorkHoursAndEarnings = (assistances, employees) => {
         // Agrega las horas pagadas a cada asistencia
         assistance.paid_hours = hoursWorked
       } else {
+        const { hsRegular, hsExtra } = calculateRegularAndExtraHours(
+          hoursWorked,
+          hsThreshold
+        )
+        console.log('hsRegular', hsRegular)
+        console.log('hsExtra', hsExtra)
         if (typeDay === TYPE_DAYS.weekend) {
-          console.log('dia de fin de semana')
+          // console.log("dia de fin de semana")
         } else {
-          console.log('dia de semana')
+          // console.log("dia de semana")
         }
       }
     })

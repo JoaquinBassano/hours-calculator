@@ -23,8 +23,8 @@ export const config = {
     holiday: 'Feriado'
   },
   employee_categories: {
-    receipt8: { name: 'Recibo 8hs', rest: 8 },
-    receipt6: { name: 'Recibo 6hs', rest: 6 },
-    withoutReceipt: { name: 'Sin Recibo', rest: 0 }
+    receipt8: { name: 'Recibo 8hs', rest: '8:00' },
+    receipt6: { name: 'Recibo 6hs', rest: '6:00' },
+    withoutReceipt: { name: 'Sin Recibo', rest: '8:00' }
   }
 }

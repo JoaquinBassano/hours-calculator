@@ -2,14 +2,14 @@ import path from 'path'
 
 import {
   transformAssitance,
-  transformEmployee
+  transformEmployee,
 } from '../helpers/transformers/index.js'
 import { filterByYearMonth } from '../helpers/filters/index.js'
-import { calculateWorkHoursAndEarnings } from '../helpers/calculate-works-hours-and-earnings.js'
+import { calculateWorkHours } from '../helpers/calculate-works-hours.js'
 import { getMonthName } from '../helpers/get-month-name.js'
 
 import { processCSV } from '../services/process-csv.js'
-import { generateAttendancePDF } from '../services/generate-pfd.js'
+import { generateAttendancePDF } from '../services/generate-pdf.js'
 
 import logger from '../utils/logger.js'
 
@@ -35,15 +35,12 @@ export const hoursCalculator = async ({ month, year }) => {
       processCSV(
         `${inputPath}/Asistencias - La Aldeana - Datos Empleados.csv`,
         transformEmployee
-      )
+      ),
     ])
 
-    // console.log('🚀 ~ hoursCalculator ~ employees:', employees)
-    // console.log('🚀 ~ hoursCalculator ~ assistances:', assistances)
     logger.warning(`Asistencias totales para procesar: ${assistances.length}`)
 
-    const workSummary = calculateWorkHoursAndEarnings(assistances, employees)
-    // console.log('🚀 ~ hoursCalculator ~ workSummary:', workSummary)
+    const workSummary = calculateWorkHours(assistances, employees)
 
     generateAttendancePDF({
       filePath: `${outputPath}/Resumen Asistencias - ${year} - ${getMonthName(
@@ -51,7 +48,7 @@ export const hoursCalculator = async ({ month, year }) => {
       )}.pdf`,
       summary: workSummary,
       month,
-      year
+      year,
     })
 
     logger.info('Script finalizado: hours-calculator\n')

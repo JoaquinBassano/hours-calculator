@@ -1,9 +1,10 @@
-Puntos a tener en cuenta
+FIXME
 
-- Tener cuidado con el cambio de día (calculo absoluto)
+- Permitir cargas dias franco
+- Permitir marcar dias con certificado (mostrar la observacion en el listado)
+- Revisar días que tienen dos asistencias
+- Refactor calculate-works-hours
 
-Tipos de Horas (cargar como config)
+TODO
 
-- Horas Lunes a Viernes
-- Horas Sabado y Domingo
-- Horas Feriados
+- Revisar Cambios de turno

@@ -4,7 +4,10 @@ export const sumHours = (duration1, duration2) => {
   const totalDuration = moment
     .duration(duration1)
     .add(moment.duration(duration2))
-  return moment.utc(totalDuration.asMilliseconds()).format('HH:mm')
+  const hours = Math.floor(totalDuration.asHours())
+  const minutes = totalDuration.minutes()
+
+  return `${hours}:${minutes.toString().padStart(2, '0')}`
 }
 
 export const calculateRegularAndExtraHours = (workedHours, threshold) => {

@@ -4,7 +4,8 @@
   "description": "Script que calcula las horas trabajas de un empleado de La Aldeana",
   "type": "module",
   "scripts": {
-    "start": "node app"
+    "start": "node app",
+    "lint-fix": "standard --fix"
   },
   "author": "Joaquin Bassano",
   "license": "ISC",
@@ -13,5 +14,8 @@
     "csv-parser": "^3.0.0",
     "moment": "^2.30.1",
     "pdfkit": "^0.15.0"
+  },
+  "devDependencies": {
+    "standard": "^17.1.2"
   }
 }

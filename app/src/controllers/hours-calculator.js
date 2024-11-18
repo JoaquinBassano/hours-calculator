@@ -2,7 +2,7 @@ import path from 'path'
 
 import {
   transformAssitance,
-  transformEmployee,
+  transformEmployee
 } from '../helpers/transformers/index.js'
 import { filterByYearMonth } from '../helpers/filters/index.js'
 import { calculateWorkHours } from '../helpers/calculate-works-hours.js'
@@ -35,7 +35,7 @@ export const hoursCalculator = async ({ month, year }) => {
       processCSV(
         `${inputPath}/Asistencias - La Aldeana - Datos Empleados.csv`,
         transformEmployee
-      ),
+      )
     ])
 
     logger.warning(`Asistencias totales para procesar: ${assistances.length}`)
@@ -48,14 +48,14 @@ export const hoursCalculator = async ({ month, year }) => {
       )}.pdf`,
       summary: workSummary,
       month,
-      year,
+      year
     })
 
     logger.info('Script finalizado: hours-calculator\n')
   } catch (error) {
     logger.error(error.toString())
     logger.error(
-      `No se puede continuar con la ejecución del script debido a un error.\n`
+      'No se puede continuar con la ejecución del script debido a un error.\n'
     )
   }
 }

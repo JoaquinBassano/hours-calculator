@@ -11,24 +11,24 @@ export const config = {
     Septiembre: 8,
     Octubre: 9,
     Noviembre: 10,
-    Diciembre: 11,
+    Diciembre: 11
   },
   years: {
     2024: 2024,
-    2025: 2025,
+    2025: 2025
   },
   type_days: {
     weekend: 'Sábado/Domingo',
     week: 'Lunes a Viernes',
-    holiday: 'Feriado',
+    holiday: 'Feriado'
   },
   type_especial_days: {
     rest_day: 'Franco',
-    medical_certificate: 'Certificado Médico',
+    medical_certificate: 'Certificado Médico'
   },
   employee_categories: {
     receipt8: { name: 'Recibo 8hs', rest: '8:00' },
     receipt6: { name: 'Recibo 6hs', rest: '6:00' },
-    withoutReceipt: { name: 'Sin Recibo', rest: '8:00' },
-  },
+    withoutReceipt: { name: 'Sin Recibo', rest: '8:00' }
+  }
 }

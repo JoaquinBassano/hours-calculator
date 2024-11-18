@@ -93,7 +93,7 @@ const drawTableHeader = (doc, tableY) => {
 const drawTableRow = (doc, assistance, tableY) => {
   doc.fontSize(12)
   doc.text(assistance.date, 50, tableY)
-  if (!!assistance.especial_day) {
+  if (assistance.especial_day) {
     const textWidth = doc.widthOfString(assistance.especial_day)
     const columnWidth = 250
     const textX = 120 + (columnWidth - textWidth) / 2
@@ -131,7 +131,7 @@ const generateSummaryTable = (doc, hoursWorked, daysWorked) => {
     .text('Resumen de Horas Trabajadas', 60, doc.y)
     .font('Helvetica')
 
-  let tableTop = doc.y + 20
+  const tableTop = doc.y + 20
   let tableY = tableTop
 
   doc.fontSize(12).text(' ', 50, tableY)

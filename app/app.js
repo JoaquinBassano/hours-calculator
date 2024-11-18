@@ -8,7 +8,7 @@ console.clear()
 
 const params = {
   year: YEARS[2024],
-  month: MONTHS.Octubre,
+  month: MONTHS.Noviembre,
 }
 
 await hoursCalculator(params)

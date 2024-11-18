@@ -1,10 +1,5 @@
-FIXME
-
-- Permitir cargas dias franco
-- Permitir marcar dias con certificado (mostrar la observacion en el listado)
-- Revisar días que tienen dos asistencias
-- Refactor calculate-works-hours
-
 TODO
 
+- Revisar días que tienen dos asistencias
+- Refactor calculate-works-hours y generateSummaryTable en generate-pdf
 - Revisar Cambios de turno

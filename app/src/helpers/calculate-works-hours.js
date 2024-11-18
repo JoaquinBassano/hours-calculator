@@ -5,8 +5,11 @@ import { config } from '../../config/index.js'
 import { sumHours, calculateRegularAndExtraHours } from './hours-operations.js'
 import { getCategoryKeyByName } from './get-category-key.js'
 
-const { type_days: TYPE_DAYS, employee_categories: EMPLOYEE_CATEGORIES } =
-  config
+const {
+  type_days: TYPE_DAYS,
+  employee_categories: EMPLOYEE_CATEGORIES,
+  type_especial_days: TYPE_ESPECIAL_DAYS,
+} = config
 
 export const calculateWorkHours = (assistances, employees) => {
   // Agrupar las asistencias por email y sumar campos de información requerida
@@ -26,6 +29,12 @@ export const calculateWorkHours = (assistances, employees) => {
           extra_weekend: '0:00', // suma de horas extras de fin de semana (all categories)
           regular_week: '0:00', // suma de horas regulares de la semana (only without receipt)
           regular_weekend: '0:00', // suma de horas regulares de fin de semana (only without receipt)
+        },
+        days_worked: {
+          total_week_and_weekend: 0,
+          total_holiday: 0,
+          total_rest_day: 0,
+          total_medical_certificate: 0,
         },
       }
     }
@@ -51,7 +60,24 @@ export const calculateWorkHours = (assistances, employees) => {
       ].rest
 
     employee.assistances.forEach((assistance) => {
-      const { type_day: typeDay, hours_worked: hoursWorked } = assistance
+      const {
+        type_day: typeDay,
+        hours_worked: hoursWorked,
+        especial_day: especialDay,
+      } = assistance
+
+      if (!!especialDay) {
+        // Agrega el tipo de dia especial a los dias trabajados
+        switch (especialDay) {
+          case TYPE_ESPECIAL_DAYS.rest_day:
+            employee.days_worked.total_rest_day += 1
+            break
+          case TYPE_ESPECIAL_DAYS.medical_certificate:
+            employee.days_worked.total_medical_certificate += 1
+            break
+        }
+        return
+      }
 
       if (typeDay === TYPE_DAYS.holiday) {
         // Suma de horas de feriados
@@ -61,7 +87,13 @@ export const calculateWorkHours = (assistances, employees) => {
         )
         // Agrega las horas pagadas a cada asistencia
         assistance.paid_hours = hoursWorked
+
+        // Agrega el día feriado a los dias trabajados
+        employee.days_worked.total_holiday += 1
       } else {
+        // Agrega el día (semana o finde) a los dias trabajados
+        employee.days_worked.total_week_and_weekend += 1
+
         const { hsRegular, hsExtra } = calculateRegularAndExtraHours(
           hoursWorked,
           hsThreshold

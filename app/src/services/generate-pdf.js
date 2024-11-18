@@ -20,6 +20,7 @@ export const generateAttendancePDF = ({ filePath, summary, month, year }) => {
     const {
       assistances,
       hours_worked: hoursWorked,
+      days_worked: daysWorked,
       ...employeeData // {id, name, category}
     } = sortedSummary[email]
 
@@ -39,8 +40,7 @@ export const generateAttendancePDF = ({ filePath, summary, month, year }) => {
 
     doc.addPage()
     generateHeaders(doc, employeeData)
-    doc.fontSize(12).text('Resumen de Horas Trabajadas')
-    generateSummaryTable(doc, hoursWorked)
+    generateSummaryTable(doc, hoursWorked, daysWorked)
   })
 
   doc.end()
@@ -93,13 +93,20 @@ const drawTableHeader = (doc, tableY) => {
 const drawTableRow = (doc, assistance, tableY) => {
   doc.fontSize(12)
   doc.text(assistance.date, 50, tableY)
-  doc.text(assistance.hour_in, 120, tableY)
-  doc.text(assistance.hour_out, 220, tableY)
-  doc.text(
-    `${assistance.hours_worked} (${assistance.paid_hours || '0:00'})`,
-    320,
-    tableY
-  )
+  if (!!assistance.especial_day) {
+    const textWidth = doc.widthOfString(assistance.especial_day)
+    const columnWidth = 250
+    const textX = 120 + (columnWidth - textWidth) / 2
+    doc.text(assistance.especial_day, textX, tableY)
+  } else {
+    doc.text(assistance.hour_in, 120, tableY)
+    doc.text(assistance.hour_out, 220, tableY)
+    doc.text(
+      `${assistance.hours_worked} (${assistance.paid_hours || '0:00'})`,
+      320,
+      tableY
+    )
+  }
   doc.text(assistance.type_day, 420, tableY)
 }
 
@@ -116,8 +123,15 @@ const checkAndAddPage = (doc, tableY, tableTop, { id, name, category }) => {
 }
 
 // Función para generar la tabla de resumen
-const generateSummaryTable = (doc, hoursWorked) => {
-  const tableTop = doc.y + 20
+const generateSummaryTable = (doc, hoursWorked, daysWorked) => {
+  // Resumen de Horas Trabajadas
+  doc
+    .fontSize(12)
+    .font('Helvetica-Bold')
+    .text('Resumen de Horas Trabajadas', 60, doc.y)
+    .font('Helvetica')
+
+  let tableTop = doc.y + 20
   let tableY = tableTop
 
   doc.fontSize(12).text(' ', 50, tableY)
@@ -144,4 +158,52 @@ const generateSummaryTable = (doc, hoursWorked) => {
   doc.text('Extra', 50, tableY)
   doc.text(hoursWorked.extra_week, 150, tableY)
   doc.text(hoursWorked.extra_weekend, 250, tableY)
+
+  // Agregar un espacio adicional entre las dos secciones
+  tableY += 50
+
+  // Resumen de Días Trabajados
+  doc
+    .fontSize(12)
+    .font('Helvetica-Bold')
+    .text('Resumen de Días Trabajados', 60, tableY)
+    .font('Helvetica')
+
+  tableY += 25
+
+  doc.fontSize(12).text('Tipo de Día', 50, tableY)
+  doc.text('Total Días', 250, tableY)
+  doc
+    .moveTo(50, tableY + 15)
+    .lineTo(500, tableY + 15)
+    .stroke()
+
+  tableY += 25
+  doc.text('Semana y Fin de Semana', 50, tableY)
+  doc.text(daysWorked.total_week_and_weekend, 250, tableY)
+
+  tableY += 25
+  doc.text('Feriado', 50, tableY)
+  doc.text(daysWorked.total_holiday, 250, tableY)
+
+  tableY += 25
+  doc.text('Día de Franco', 50, tableY)
+  doc.text(daysWorked.total_rest_day, 250, tableY)
+
+  tableY += 25
+  doc.text('Certificado Médico', 50, tableY)
+  doc.text(daysWorked.total_medical_certificate, 250, tableY)
+
+  // Sumatoria Final de Todos los Días
+  const totalDays =
+    daysWorked.total_week_and_weekend +
+    daysWorked.total_holiday +
+    daysWorked.total_rest_day +
+    daysWorked.total_medical_certificate
+
+  tableY += 25
+  doc.moveTo(50, tableY).lineTo(500, tableY).stroke()
+  tableY += 15
+  doc.fontSize(12).text('Total Días Trabajados', 50, tableY)
+  doc.text(totalDays, 250, tableY)
 }

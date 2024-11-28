@@ -24,7 +24,8 @@ export const config = {
   },
   type_especial_days: {
     rest_day: 'Franco',
-    medical_certificate: 'Certificado Médico'
+    medical_certificate: 'Certificado Médico',
+    other_reason: 'Otro motivo'
   },
   employee_categories: {
     receipt8: { name: 'Recibo 8hs', rest: '8:00' },

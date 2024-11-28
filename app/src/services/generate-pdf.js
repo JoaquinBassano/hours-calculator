@@ -194,12 +194,17 @@ const generateSummaryTable = (doc, hoursWorked, daysWorked) => {
   doc.text('Certificado Médico', 50, tableY)
   doc.text(daysWorked.total_medical_certificate, 250, tableY)
 
+  tableY += 25
+  doc.text('Otra Motivo', 50, tableY)
+  doc.text(daysWorked.total_other_reason, 250, tableY)
+
   // Sumatoria Final de Todos los Días
   const totalDays =
     daysWorked.total_week_and_weekend +
     daysWorked.total_holiday +
     daysWorked.total_rest_day +
-    daysWorked.total_medical_certificate
+    daysWorked.total_medical_certificate +
+    daysWorked.total_other_reason
 
   tableY += 25
   doc.moveTo(50, tableY).lineTo(500, tableY).stroke()

@@ -34,7 +34,8 @@ export const calculateWorkHours = (assistances, employees) => {
           total_week_and_weekend: 0,
           total_holiday: 0,
           total_rest_day: 0,
-          total_medical_certificate: 0
+          total_medical_certificate: 0,
+          total_other_reason: 0
         }
       }
     }
@@ -74,6 +75,9 @@ export const calculateWorkHours = (assistances, employees) => {
             break
           case TYPE_ESPECIAL_DAYS.medical_certificate:
             employee.days_worked.total_medical_certificate += 1
+            break
+          case TYPE_ESPECIAL_DAYS.other_reason:
+            employee.days_worked.total_other_reason += 1
             break
         }
         return

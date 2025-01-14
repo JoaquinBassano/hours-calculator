@@ -150,7 +150,7 @@ const generateSummaryTable = (doc, hoursWorked, daysWorked) => {
   doc.text(hoursWorked.total_holiday, 350, tableY)
 
   tableY += 25
-  doc.text('Regular', 50, tableY)
+  doc.text('Normal', 50, tableY)
   doc.text(hoursWorked.regular_week, 150, tableY)
   doc.text(hoursWorked.regular_weekend, 250, tableY)
 

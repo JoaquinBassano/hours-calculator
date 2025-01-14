@@ -6,6 +6,6 @@ export const transformAssitance = (data) => {
     hour_out: data['Hora de Egreso'],
     hours_worked: data['Hs Trabajadas (hh:mm)'],
     type_day: data['Día'],
-    especial_day: data['Día Especial']
+    especial_day: data['Día Especial'].trim()
   }
 }

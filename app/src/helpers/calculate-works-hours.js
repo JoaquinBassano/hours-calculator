@@ -53,8 +53,11 @@ export const calculateWorkHours = (assistances, employees) => {
     )
   })
 
+  const assistancesXEmailGroupedByDate =
+    groupAssistancesByDate(assistancesXEmail)
+
   // Procesamiento de las horas de cada empleado
-  Object.values(assistancesXEmail).forEach((employee) => {
+  Object.values(assistancesXEmailGroupedByDate).forEach((employee) => {
     const hsThreshold =
       EMPLOYEE_CATEGORIES[
         getCategoryKeyByName(EMPLOYEE_CATEGORIES, employee.category)
@@ -145,5 +148,71 @@ export const calculateWorkHours = (assistances, employees) => {
     })
   })
 
-  return assistancesXEmail
+  return assistancesXEmailGroupedByDate
+}
+
+// Procesar las asistencias
+const groupAssistancesByDate = (assistancesData) => {
+  const result = {}
+
+  Object.keys(assistancesData).forEach((email) => {
+    const { assistances, ...rest } = assistancesData[email]
+
+    const groupedAssistances = assistances.reduce((acc, assistance) => {
+      const { date, hour_in, hour_out, hours_worked, type_day, especial_day } =
+        assistance
+
+      if (!acc[date]) {
+        acc[date] = {
+          date,
+          hour_in: [],
+          hour_out: [],
+          hours_worked: '0:00',
+          type_day,
+          especial_day
+        }
+      }
+
+      acc[date].hour_in.push(hour_in)
+      acc[date].hour_out.push(hour_out)
+      if (hours_worked) {
+        acc[date].hours_worked = sumHours(acc[date].hours_worked, hours_worked)
+      }
+
+      return acc
+    }, {})
+
+    console.log(
+      '🚀 ~ groupedAssistances ~ groupedAssistances:',
+      groupedAssistances
+    )
+
+    const groupedAssistancesArray = Object.values(groupedAssistances).map(
+      (assistance) => {
+        if (assistance.hour_in.length === 1) {
+          assistance.hour_in = assistance.hour_in[0]
+          assistance.hour_out = assistance.hour_out[0]
+        } else {
+          assistance.hour_in.sort(
+            (a, b) =>
+              new Date(`1970-01-01T${a.split(' ')[0]}Z`) -
+              new Date(`1970-01-01T${b.split(' ')[0]}Z`)
+          )
+          assistance.hour_out.sort(
+            (a, b) =>
+              new Date(`1970-01-01T${a.split(' ')[0]}Z`) -
+              new Date(`1970-01-01T${b.split(' ')[0]}Z`)
+          )
+        }
+        return assistance
+      }
+    )
+
+    result[email] = {
+      ...rest,
+      assistances: groupedAssistancesArray
+    }
+  })
+
+  return result
 }

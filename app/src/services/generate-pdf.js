@@ -33,9 +33,28 @@ export const generateAttendancePDF = ({ filePath, summary, month, year }) => {
     drawTableHeader(doc, tableY)
 
     assistances.forEach((assistance) => {
-      tableY = checkAndAddPage(doc, tableY, tableTop, employeeData)
-      tableY += 25
-      drawTableRow(doc, assistance, tableY)
+      const hourIns = Array.isArray(assistance.hour_in)
+        ? assistance.hour_in
+        : [assistance.hour_in]
+      const hourOuts = Array.isArray(assistance.hour_out)
+        ? assistance.hour_out
+        : [assistance.hour_out]
+
+      hourIns.forEach((hourIn, index) => {
+        const isFirst = index === 0
+        tableY = checkAndAddPage(doc, tableY, tableTop, employeeData)
+        tableY += 25
+
+        // Crear una nueva asistencia con `hour_in` y `hour_out` del array
+        const rowAssistance = {
+          ...assistance,
+          hour_in: hourIn,
+          hour_out: hourOuts[index],
+          isFirst
+        }
+
+        drawTableRow(doc, rowAssistance, tableY)
+      })
     })
 
     doc.addPage()
@@ -92,7 +111,7 @@ const drawTableHeader = (doc, tableY) => {
 // Función para dibujar una fila de la tabla
 const drawTableRow = (doc, assistance, tableY) => {
   doc.fontSize(12)
-  doc.text(assistance.date, 50, tableY)
+  if (assistance.isFirst) doc.text(assistance.date, 50, tableY)
   if (assistance.especial_day) {
     const textWidth = doc.widthOfString(assistance.especial_day)
     const columnWidth = 250
@@ -101,13 +120,14 @@ const drawTableRow = (doc, assistance, tableY) => {
   } else {
     doc.text(assistance.hour_in, 120, tableY)
     doc.text(assistance.hour_out, 220, tableY)
-    doc.text(
-      `${assistance.hours_worked} (${assistance.paid_hours || '0:00'})`,
-      320,
-      tableY
-    )
+    if (assistance.isFirst)
+      doc.text(
+        `${assistance.hours_worked} (${assistance.paid_hours || '0:00'})`,
+        320,
+        tableY
+      )
   }
-  doc.text(assistance.type_day, 420, tableY)
+  if (assistance.isFirst) doc.text(assistance.type_day, 420, tableY)
 }
 
 // Función para verificar y agregar nueva página si es necesario

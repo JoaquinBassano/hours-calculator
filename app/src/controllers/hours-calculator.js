@@ -55,11 +55,11 @@ export const hoursCalculator = async ({ month, year, mode = 'prod' }) => {
 
     const workSummary = calculateWorkHours(assistances, employees)
 
-    console.log('🚀 ~ hoursCalculator ~ workSummary:', workSummary)
-    console.log(
-      '🚀 ~ hoursCalculator ~ workSummary.assistances:',
-      workSummary['joaquinbas98@gmail.com'].assistances
-    )
+    // console.log('🚀 ~ hoursCalculator ~ workSummary:', workSummary)
+    // console.log(
+    //   '🚀 ~ hoursCalculator ~ workSummary.assistances:',
+    //   workSummary['juanperez@gmail.com'].assistances
+    // )
 
     generateAttendancePDF({
       filePath: `${outputPath}/Resumen Asistencias - ${year} - ${getMonthName(

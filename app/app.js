@@ -7,8 +7,9 @@ const { years: YEARS, months: MONTHS } = config
 console.clear()
 
 const params = {
-  year: YEARS[2024],
-  month: MONTHS.Diciembre
+  year: YEARS[2025],
+  month: MONTHS.Febrero,
+  mode: 'test'
 }
 
 await hoursCalculator(params)

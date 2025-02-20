@@ -14,8 +14,18 @@ import { generateAttendancePDF } from '../services/generate-pdf.js'
 import logger from '../utils/logger.js'
 
 // import { config } from '../../config/index.js'
+const sheetNames = {
+  prod: {
+    assistances: 'Asistencias - La Aldeana - Registros',
+    employees: 'Asistencias - La Aldeana - Datos Empleados'
+  },
+  test: {
+    assistances: 'Asistencias - La Aldeana (test) - Registros',
+    employees: 'Asistencias - La Aldeana (test) - Datos Empleados'
+  }
+}
 
-export const hoursCalculator = async ({ month, year }) => {
+export const hoursCalculator = async ({ month, year, mode = 'prod' }) => {
   try {
     logger.info('Script iniciado: hours-calculator')
 
@@ -26,21 +36,30 @@ export const hoursCalculator = async ({ month, year }) => {
 
     const [assistances, employees] = await Promise.all([
       processCSV(
-        `${inputPath}/Asistencias - La Aldeana - Registros.csv`,
+        `${inputPath}/${sheetNames[mode].assistances}.csv`,
         transformAssitance,
         filterByYearMonth,
         year,
         month
       ),
       processCSV(
-        `${inputPath}/Asistencias - La Aldeana - Datos Empleados.csv`,
+        `${inputPath}/${sheetNames[mode].employees}.csv`,
         transformEmployee
       )
     ])
 
+    // console.log('🚀 ~ hoursCalculator ~ employees:', employees)
+    // console.log('🚀 ~ hoursCalculator ~ assistances:', assistances)
+
     logger.warning(`Asistencias totales para procesar: ${assistances.length}`)
 
     const workSummary = calculateWorkHours(assistances, employees)
+
+    console.log('🚀 ~ hoursCalculator ~ workSummary:', workSummary)
+    console.log(
+      '🚀 ~ hoursCalculator ~ workSummary.assistances:',
+      workSummary['joaquinbas98@gmail.com'].assistances
+    )
 
     generateAttendancePDF({
       filePath: `${outputPath}/Resumen Asistencias - ${year} - ${getMonthName(
